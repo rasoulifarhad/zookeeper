@@ -1,0 +1,14 @@
+spring.application.name: zookepperConfig
+spring.config.import: "zookeeper:"
+spring.cloud.zookeeper.connect-string: localhost:2181
+spring.cloud.zookeeper.config.enabled: true
+spring.cloud.zookeeper.enabled: true
+spring.cloud.zookeeper.config.root: /config
+spring.cloud.zookeeper.config.default-context: application
+spring.cloud.zookeeper.config.fail-fast: false
+
+#spring.cloud.zookeeper.blockUntilConnectedWait: 0
+spring.cloud.zookeeper.maxSleepMs: 0
+spring.cloud.zookeeper.maxRetries: 0
+spring.cloud.zookeeper.baseSleepTimeMs: 0
+spring.config.use-legacy-processing: true
