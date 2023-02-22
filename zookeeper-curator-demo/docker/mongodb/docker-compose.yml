@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  adminer:
+    image: adminer:4.8.1
+    restart: unless-stopped
+    ports:
+      - 8080:8080  
+    networks:
+    - mongo_net
+    depends_on: 
+    - mongo    
+  mongo:
+    image: mongo:6.0.2
+    restart: unless-stopped
+    environment:
+    ports:
+      - 27017:27017    
+    networks:
+    - mongo_net
+
+networks:
+  mongo_net:
+    driver: bridge
+    name: mongo_net
+
+volumes:
+  mongo-db:
+    driver: local    

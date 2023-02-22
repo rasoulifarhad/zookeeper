@@ -1,0 +1,7 @@
+Log into mongo (robo-mongo) and insert fake data.
+
+db.getCollection('ipTable').insert( { ip: "161.185.160.93", state: "NY", status: "COMPLETED" } )
+db.getCollection('ipTable').createIndex( { ip: 1 } )
+db.getCollection('ipTable').insert( { ip: "140.241.27.22", state: "MA", status: "COMPLETED" } )
+db.getCollection('ipTable').insert( { ip: "209.205.209.130", state: "", status: "NEW" } )
+db.getCollection('ipTable').insert( { ip: "98.109.27.225", state: "", status: "NEW" } )

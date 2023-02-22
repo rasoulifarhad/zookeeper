@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:13.2
+    restart: unless-stopped
+    environment:
+    - POSTGRES_USER=distlock
+    - POSTGRES_PASSWORD=distlock
+    - POSTGRES_DB=distlock
+    #- PGDATA=/data/postgres
+    #volumes:
+    #- postgres-db:/data/postgres    
+    ports:
+    - '5432:5432'
+    networks:
+    - db_net
+  adminer:
+    image: adminer:4.8.1
+    restart: unless-stopped
+    ports:
+      - 8080:8080  
+    networks:
+    - db_net
+    depends_on: 
+    - db    
+    
+networks:
+  db_net:
+    driver: bridge
+    name: db_net
+volumes:
+  postgres-db:
+    driver: local    

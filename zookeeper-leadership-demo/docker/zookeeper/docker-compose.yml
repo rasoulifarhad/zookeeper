@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+  zoo1:
+    image: zookeeper:3.8.0
+    #restart: always
+    container_name: zoo1
+    hostname: zoo1
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+      - 4181:8080
+    networks:
+      - zoo_net
+     
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181
+      ZOO_TICK_TIME: 2000
+      ZOO_INIT_LIMIT: 5
+      ZOO_SYNC_LIMIT: 2
+      ZOO_MAX_CLIENT_CNXNS: 60
+      ZOO_STANDALONE_ENABLED: true
+      ## The AdminServer is an embedded Jetty server that provides an HTTP interface to the four letter word commands. 
+      ## By default, the server is started on port 8080, and commands are issued by going to the URL 
+      ## "/commands/[command name]", e.g., http://localhost:8080/commands/stat.
+      ZOO_ADMINSERVER_ENABLED: true
+      #ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+  zoonavigator:
+    container_name: zoonavigator
+    image: elkozmon/zoonavigator:1.1.2
+    ports:
+      - 9000:9000
+    networks:
+      - zoo_net
+networks:
+  zoo_net:
+    driver: bridge
+    name: zoo_net

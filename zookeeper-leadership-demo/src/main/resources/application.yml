@@ -1,0 +1,30 @@
+#project-name: @project.name@
+#app-title: @app.title@
+#spring-version: @spring.version@
+#server.port: 8090
+server:
+  redis: 
+    host: localhost
+project.basedir: @project.basedir@
+spring.profiles.active: leadership-zookeeper
+#spring.main.allow-bean-definition-overriding: true
+
+spring.data.mongodb.database: test
+spring.data.mongodb.port: 27017
+spring.data.mongodb.host: localhost
+
+## Configure Data Source Properties
+spring:
+  datasource: 
+    url: jdbc:postgresql://localhost:5432/distlock
+    username: distlock
+    password: distlock
+  flyway: 
+    locations:
+    - classpath:sql
+    sqlMigrationPrefix: v
+  h2: 
+    console.enabled: true  
+  redis: 
+    host: localhost
+    port: 6379
