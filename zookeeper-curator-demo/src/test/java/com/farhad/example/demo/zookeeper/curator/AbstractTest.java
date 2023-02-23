@@ -7,6 +7,7 @@ import org.apache.curator.utils.CloseableUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.apache.curator.x.async.AsyncCuratorFramework;
+import org.apache.zookeeper.CreateMode;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -21,7 +22,7 @@ public class AbstractTest {
     TestingServer server = null ;
 
     @BeforeEach
-    void  before() {
+    public void  before() {
 
         try {
             server = new TestingServer() ;
@@ -31,12 +32,12 @@ public class AbstractTest {
     }
 
     @AfterEach
-    void after() {
+    public void after() {
         
         CloseableUtils.closeQuietly(server);
     }
 
-    AsyncCuratorFramework getAndStartClientAsync(String connectString) {
+    public AsyncCuratorFramework getAndStartClientAsync(String connectString) {
 
         ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, 3);
         CuratorFramework client = CuratorFrameworkFactory.newClient(connectString, retryPolicy);
@@ -46,11 +47,11 @@ public class AbstractTest {
     }
 
 
-    AsyncCuratorFramework getAndStartClientAsync() {
+    public AsyncCuratorFramework getAndStartClientAsync() {
         return getAndStartClientAsync(server.getConnectString());
     }
 
-    CuratorFramework getClient(String connectString,boolean start)  {
+    public CuratorFramework getClient(String connectString,boolean start)  {
 
         ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, 3);
         CuratorFramework client = CuratorFrameworkFactory.newClient(connectString, retryPolicy);
@@ -60,28 +61,61 @@ public class AbstractTest {
         
     }
 
-    CuratorFramework getClient(String connectString)  {
+    public CuratorFramework getClient(String connectString)  {
         return getClient(connectString,true);        
     }
 
-    CuratorFramework getClient()  {
+    public CuratorFramework getClient()  {
 
         return getClient(server.getConnectString(),true);
     }
 
-    CuratorFramework getClient(boolean start)  {
+    public CuratorFramework getClient(boolean start)  {
 
         return getClient(server.getConnectString(),start);
     }
 
-    String key() {
+    public String key() {
         return String.format(KEY_FORMAT,UUID.randomUUID().toString());
     }
 
 
+    public void setNodeData(String path, String data) throws Exception {
+
+        this.setNodeData(path, data.getBytes());
+    }
+
+    public void setNodeData(String path, byte[] data) throws Exception {
+
+        try ( CuratorFramework client = getClient() ) { 
+            client.setData().forPath(path,data);
+        } 
+
+    }
+
+    public void createNode(String path) throws Exception {
+
+        try ( CuratorFramework client = getClient() ) { 
+
+            if (client.checkExists().forPath(path) != null){
+                CuratorOpsUtils.delete(client,path);
+            }
+            CuratorOpsUtils.create(client, path);;
+        } 
+
+    }
+
+    public void createPersistNode(String path) throws Exception {
+
+        try ( CuratorFramework client = getClient() ) { 
+            client.create().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(path);
+        } 
+
+    }
+
     @AllArgsConstructor
     @Getter
-    static class StringData {
+    public static class StringData {
         private final String data;
     }
 

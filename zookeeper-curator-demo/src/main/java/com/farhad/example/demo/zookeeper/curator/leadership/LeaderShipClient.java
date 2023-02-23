@@ -1,4 +1,4 @@
-package com.farhad.example.demo.zookeeper.curator;
+package com.farhad.example.demo.zookeeper.curator.leadership;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -17,9 +17,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class LeaderShipClient extends LeaderSelectorListenerAdapter implements Closeable{ 
-    void tt() {
-        
-    }
 
     private final String name ;
     private final LeaderSelector leaderSelector;

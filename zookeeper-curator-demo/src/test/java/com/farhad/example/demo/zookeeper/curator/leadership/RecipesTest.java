@@ -1,17 +1,18 @@
-package com.farhad.example.demo.zookeeper.curator;
+package com.farhad.example.demo.zookeeper.curator.leadership;
 
 import org.junit.jupiter.api.Test;
+
+import com.farhad.example.demo.zookeeper.curator.AbstractTest;
 
 import java.time.Duration;
 // import java.util.concurrent.TimeUnit.* ;
 // import org.hamcrest.Matchers.* ;
 // import org.apache.curator.utils.CloseableUtils;
 // import org.awaitility.Awaitility.* ;
-import java.time.Duration.*;
+// import java.time.Duration.*;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.curator.x.async.AsyncCuratorFramework;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
@@ -19,7 +20,6 @@ import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreMutex;
 import org.apache.curator.framework.recipes.shared.SharedCount;
 import org.apache.curator.framework.state.ConnectionState;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 // import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.awaitility.Awaitility.await;
@@ -88,8 +88,10 @@ public class RecipesTest extends AbstractTest{
     public void counter_test() throws Exception {
 
 
-        try ( CuratorFramework client = getClient() ) {
-            SharedCount counter  = new SharedCount(client, "/counters/big-mans", 0); 
+        try ( 
+            CuratorFramework client = getClient() ;
+            SharedCount counter  = new SharedCount(client, "/counters/big-mans", 0)
+        ) {
             counter.start();
 
             counter.setCount(0);
