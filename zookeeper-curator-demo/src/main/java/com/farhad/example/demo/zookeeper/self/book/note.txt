@@ -1,0 +1,85 @@
+##
+#
+# This example implements a simple master-worker system. 
+# 
+#   - There is a primary master assigning tasks and it supports backup masters to replace the primary in the case it crashes. 
+#
+#   - Workers execute tasks assigned to it. 
+#
+#   - The task consists of reading the content of the task znode, nothing more. 
+#
+#   - Finally, clients submit tasks and wait for a status znode.
+#
+# Here is a summary of the code flow for each of the components:
+#
+## Master
+#
+#  1. Before taking leadership
+#
+#        1. Try to create the master znode
+#
+#        2. If it goes through, then take leadership
+#
+#        3. Upon connection loss, needs to check if znode is there and who owns it 
+#
+#        4. Upon determining that someone else owns it, watch the master znode
+#
+#  2. After taking leadership
+#
+#        1. Get workers
+#
+#             - Set a watch on the list of workers
+#             - Check for dead workers and reassign tasks
+#             - For each dead worker
+#             - Get assigned tasks
+#             - Get task data
+#             - Move task to the list of unassigned tasks
+#             - Delete assignment 
+#
+#        2. Recover tasks (tasks assigned to dead workers) 
+#
+#        3. Get unassigned tasks and assign them 
+#
+#        4. For each unassigned task 
+# 
+#             - Get task data
+#             - Choose worker
+#             - Assign to worker
+#             - Delete task from the list of unassigned
+#             
+## Worker
+#
+#    1. Creates /assign/worker-xxx znode
+#    2. Creates /workers/worker-xxx znode
+#    3. Watches /assign/worker-xxx znode
+#    4. Get tasks upon assignment
+#    5. For each task, get task data
+#    6. Execute task data
+#    7. Create status
+#    8. Delete assignment  
+#
+## Client
+#
+#    1. Create task
+#    2. Watch for status znode
+#    3. Upon receiving a notification for the status znode, get status data
+#    4. Delete status znode
+#
+### RUN
+#
+## Step 1: Start ZooKeeper 
+#
+## Step 2: Start the master
+#
+#   java  org.apache.zookeeper.book.Master localhost:2181
+#
+## Step 3: Start a couple of workers
+#
+#   java  org.apache.zookeeper.book.Worker localhost:2181
+#
+## Step 4: Run a client
+#
+#   java  org.apache.zookeeper.book.Client localhost:2181
+#
+#
+

@@ -1,6 +1,8 @@
 package com.farhad.example.demo.zookeeper.curator;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Arrays;
 import java.util.List;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.Watcher;
@@ -12,7 +14,18 @@ import org.apache.curator.framework.api.CuratorListener;
 @Slf4j
 public class CuratorOpsUtils {
   
-    
+    public static void bootstrap(CuratorFramework client, String... paths ) throws Exception {
+
+        Arrays.asList(paths).forEach( path -> {
+                try{
+                    client.create().forPath("/workers", new byte[0]);
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+        } ); 
+    }
+
+
     public static void delete(CuratorFramework client , String path) throws Exception {
 
         // client.delete().forPath(path);
