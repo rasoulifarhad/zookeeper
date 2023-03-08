@@ -1,5 +1,5 @@
 ## ZooKeeper Recipes and Solutions
-#
+
 One of the most interesting things about ZooKeeper is that even though ZooKeeper uses asynchronous
 notifications, you can use it to build synchronous consistency primitives, such as queues and locks.
 As you will see, this is possible because ZooKeeper imposes an overall order on updates, and has
