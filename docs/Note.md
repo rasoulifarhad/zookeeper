@@ -49,7 +49,7 @@ We need to do three things:
 
 3 needs to be done by the user.
 
-Let's look at some code
+**Let's look at some code**
 
 User code: Add the below inside a @Scheduled(fixedRate = 10000)) annotated method.
   ``` 
