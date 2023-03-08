@@ -1,25 +1,25 @@
 ## Distributed Locks
 
-Purpose
+**Purpose**
 
 The purpose of this document is to implement distributed locking across multiple JVMs using spring integration.
 
-Use Case
+**Use Case**
 
 Suppose you have an IP to its State table.
-
+```
  |          IP (PK)         | state |      status     |
  | ------------------------ | ----- | --------------- |
  | 161.185.160.93           |  NY   | completed       |
  | 140.241.27.22            |  MA   | completed       |
  | 209.205.209.130          |       | new             |
  | 98.109.27.225            |       | new             |
-
+```
 Multiple instances read and write to this table. They query by IP and insert a row with IP and new status when it doesn't exist.
 
 Slowly the new rows pile up and someone needs to assign the state for the new IPs.
 
-Who will do it?
+**Who will do it?**
 
 An instance not part of this cluster.
 
@@ -31,7 +31,7 @@ One instance of this cluster.
   Pros -> read and write logic live in the same repo that makes it easier to read.
   Cons -> ensure only one instance grabs the lock.
 
-How to ensure only one instance grabs the lock?
+**How to ensure only one instance grabs the lock?**
 
 Enter spring integration!
 
@@ -75,7 +75,7 @@ User code: Add the below inside a @Scheduled(fixedRate = 10000)) annotated metho
       LOG.info("No Lock!");
   }
   ```
-What is “registry” on line 2?
+**What is “registry” on line 2?**
 
 Here the registry is JdbcLockRegistry. It is a wrapper around any JDBC technology you supply spring integration to store lock information.
   ```
@@ -89,7 +89,7 @@ Here the registry is JdbcLockRegistry. It is a wrapper around any JDBC technolog
       return new JdbcLockRegistry(lockRepository);
   }
   ```
-What is ipTableRepository on line 8?
+**What is ipTableRepository on line 8?**
 
 Table housing IP, state, and status.
   ```  
