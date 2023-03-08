@@ -38,7 +38,7 @@ Deleye znode
  ls /zk-demo
  delete /zk-demo
  ```
-#### sequential and ephemeral znodes
+#### Sequential and Ephemeral znodes
 
 Create sequential znode
  ```
