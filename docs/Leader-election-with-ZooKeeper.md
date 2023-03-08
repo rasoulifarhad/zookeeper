@@ -1,6 +1,6 @@
 ## Leader election with ZooKeeper
 
-Each process
+**Each process**
 
 1. Create an ephemeral znode with path /election
 
@@ -9,7 +9,7 @@ Each process
 3. Otherwise, watch /election
 
 
-Sessions
+**Sessions**
 
 - Abstraction of connection to the ensemble
 
@@ -22,8 +22,7 @@ Sessions
 - An ephemeral znode is associated to a session 
 
   - if session expires,then ephemerals automatically deleted
-
-
+  ```
                     client
 
 
@@ -31,18 +30,18 @@ Sessions
 
 
            ZooKeeper Ensemble
-
+  ```
 
 in kafka 
 
-ZooKeeper
+**ZooKeeper**
 
   - Stores the metadata of replica groups
 
   - Leadership and in-sync replicas 
 
 Partition replication and ZooKeeper
-
+  ```
                                        Leader=A
   ISR                                  Epoch=0   
                                        ISR={A,B,C,D,E}  
@@ -53,8 +52,8 @@ Partition replication and ZooKeeper
   ISR                                  Epoch=1   
                                        ISR={A,B,C,D}  
    A      B      C    D    (E)        zk    
-
-ZooKeeper Guarantees?
+  ```
+**ZooKeeper Guarantees?**
 
  1. Clients will never detect old data.
  
@@ -69,7 +68,7 @@ ZooKeeper Guarantees?
     consistent with results received by all other
     clients.  
 
-Data Model
+**Data Model**
 
 - Hierarchical namespace
 
@@ -77,8 +76,8 @@ Data Model
 
 - data is read and written in its entirety
 
-ZooKeeper API
-
+**ZooKeeper API
+**
 - String create(path, data, acl, flags)
 
 - void delete(path, expectedVersion)
@@ -95,7 +94,7 @@ ZooKeeper API
 
 - List<OpResult> multi(ops)
 
-ZooKeeper Service
+**ZooKeeper Service**
 
 - All servers store a copy of the data (in memory)
 
@@ -105,7 +104,9 @@ ZooKeeper Service
 
 - Update responses are sent when a majority of servers have persisted the change
 
-Configuration Management
+**Configuration Management**
+	
+```
                                                                        /config
 Administrator
                                                                                param1
@@ -127,11 +128,14 @@ Leader Election
 4. f successful lead and exit
 
 5. goto step 1
+	
+```
 
-Cluster Management
+**Cluster Management**
 
 Monitoring process:
 
+``` 
  1. Watch on /nodes
 
  1. On watch trigger do getChildren(/nodes, true)
@@ -144,9 +148,11 @@ Each Node:                                                                      
 
  2. Keep updating /nodes/node-${i} periodically for node status changes 
     (status updates could be load/iostat/cpu/others)
+```
+	
+**Work Queues**
 
-Work Queues
-
+```
 Assigner process:                                                             |
                                                                               | 
 1. Watch /tasks for published tasks                                           |--- /tasks --------------------------------------
@@ -165,8 +171,9 @@ Machine process:                                                                
 2. After executing task-${i} delete task-${i} from /tasks and /m-${i}                          |
                                                                                                \--- task-1
 
+```
 
-CoordinaOon is important 
+**CoordinaOon is important**
 
   CoordinaOon primitives
 
@@ -184,7 +191,7 @@ Work assignment
 
 Master crashes
 
-- Single point of  failure
+- Single point of failure
 
 - No work is assigned
 
@@ -213,11 +220,12 @@ Fallacies of distributed computing
 - Transport cost is zero.
 - The network is homogeneous.
 
-CAP principle
+**CAP principle**
 
 - Can’t obtain availability, consistency, and partition tolerance simultaneously
 
 ZooKeeper Overview
+```
                                                                          Ensemble 
         ┌────────────┐ ┌────────────┐                              ┌────────────────┐   
         │            │ │ ZooKeeper  │                              │  ┌──────────┐  │
@@ -239,8 +247,10 @@ ZooKeeper Overview
                                                                    │  │ Follower │  │    System
                                                                    │  └──────────┘  │ 
                                                                    └────────────────┘ 
+```
 
 Read Operation
+```
                                                                          Ensemble 
         ┌────────────┐ ┌────────────┐                              ┌────────────────┐   
         │            │ │ ZooKeeper  │            Read "x"          │  ┌─x=10─────┐  │ Read  
@@ -262,8 +272,10 @@ Read Operation
                                                                    │  │ Follower │  │
                                                                    │  └──────────┘  │ 
                                                                    └────────────────┘ 
-
+```
+	
 Write Operation
+```
                                                                          Ensemble 
         ┌────────────┐ ┌────────────┐                              ┌────────────────┐   
         │            │ │ ZooKeeper  │         write "x",11         │  ┌─x=11─────┐  │ 
@@ -285,8 +297,8 @@ Write Operation
                                                                    │  │ Follower │<─┼────┘
                                                                    │  └──────────┘  │ 
                                                                    └────────────────┘ 
-                                                                      Replicates across a quorum
-
+                                                                Replicates across a quorum
+```
 
 ZooKeeper: Semantics of Sessions
 
@@ -322,17 +334,19 @@ Order
 
 - Read: sequentially ordered
 
-  	          │ write(x,10) │
+```
+  	       │ write(x,10) │
  Client 1:     ├─────────────┤  
                │             │
                                  
-  	                         │ write(x,11) │
+  	                      │ write(x,11) │
  Client 2:                    ├─────────────┤  
                               │             │
 
-  	          │ write(x,10) ││ write(x,11) │ 
+  	       │ write(x,10) ││ write(x,11) │ 
  Sequential:   ├─────────────┤├─────────────┤  
                │             ││             │
+```
 
 ZooKeeper: Znode changes
 
@@ -386,26 +400,23 @@ Linearizability
 
   - Equivalent order satisﬁes real time precedence order
 
-
-
-
-  	          │ write(x,10) │     │   read(x)   │      
+```
+  	       │ write(x,10) │     │   read(x)   │      
  Client 1(c1): ├─────────────┤     ├─────────────┤   
                │             │     │             │  
                                  
-  	                         │   read(x)   │
+  	                      │   read(x)   │
  Client 2(c2):                ├─────────────┤  
                               │             │
 
-  	          │ (c2)read(x) ││ write(x,11) ││ (c1)read(x) │
+  	       │ (c2)read(x) ││ write(x,11) ││ (c1)read(x) │
  Sequential:   ├─────────────┤├─────────────┤├─────────────┤  
                │             ││             ││             │
 
                        Not Linearizable!!!
+```
 
-
-
-
+```
   	          │ write(x,10) │     │   read(x)   │      
  Client 1(c1): ├─────────────┤     ├─────────────┤   
                │             │     │             │  
@@ -419,7 +430,7 @@ Linearizability
                │             ││             ││             │
 
                        Linearizableeeeee
-
+```
 
 Implementing consensus
 
@@ -468,9 +479,10 @@ Master/Worker System
  > Execute tasks                                                                             tasks
 
 Task Queue
-
+``
 client1    create("/tasks/client1-", cmds, SEQUENTIAL)   // cmds is an array of string       
-  
+```
+```
 tasks
   │
   ├──client1-1
@@ -478,9 +490,11 @@ tasks
   ├──client3-4
   │
   └──client1-6
-
+```
+	
 Group Membership
 
+```
 assign                                worker1 : create("/assign/worker-", "", EPHEMERAL SEQUENTIAL)
   │
   ├── worker1
@@ -488,15 +502,19 @@ assign                                worker1 : create("/assign/worker-", "", EP
   ├── worker2                         Master: listChildren(“/assign”,true)
   │
   └── worker3
+```
 
 Leader Election
 
+```
   /master                              Master: create("/master", hostinfo, EPHEMERAL)
            
                                        Backup: getData("/master", true)                            
-
+```
+	
 Conﬁguration
 
+```
 assign                                Master : setdata(“/assign/worker2”, znode_of_task)
   │
   ├── worker1
@@ -504,6 +522,7 @@ assign                                Master : setdata(“/assign/worker2”, zn
   ├── worker2                         worker2: getdata(“/assign/worker2”, true)
   │
   └── worker3
+```
 
 Worker Processing
 
@@ -557,5 +576,3 @@ Guidelines to ConnectionLoss
 
 - Don't treat as if it's the end of the world. The
   client library will try to recover the session
- 
-  
