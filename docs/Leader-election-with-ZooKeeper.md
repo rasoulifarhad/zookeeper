@@ -120,11 +120,11 @@ Leader Election
 
 1. getdata(“/servers/leader”, true)                            /servers
 
-2. if successful follow the leader                                       s1  
+2. if successful follow the leader                                       s1
    described in the data and exit
                                                                          s2
 3. create(“/servers/leader”,hostname, EPHEMERAL) 
-                                                                        leader--> contains: "s1"                                
+                                                                        leader--> contains: "s1"
 4. f successful lead and exit
 
 5. goto step 1
