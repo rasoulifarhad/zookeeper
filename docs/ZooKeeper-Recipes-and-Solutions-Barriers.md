@@ -41,68 +41,73 @@ Double barriers enable clients to synchronize the beginning and the end of a com
 processes have joined the barrier, processes start their computation and leave the barrier once they
 have finished. This recipe shows how to use a ZooKeeper node as a barrier.
 
-    - b represents the barrier node
+- b represents the barrier node
 
-    - Every client process p registers with the barrier node on entry and unregisters when it is ready
-      to leave.
- 
-    - A node registers with the barrier node via the Enter procedure , it waits until x client process
-      register before proceeding with the computation. (The x here is up to you to determine for your
-      system.)
+- Every client process p registers with the barrier node on entry and unregisters when it is ready
+  to leave.
 
-    - Enter procedure:
-      ``` 
-      1. Create a name n = b + "/" + p
+- A node registers with the barrier node via the Enter procedure , it waits until x client process
+  register before proceeding with the computation. (The x here is up to you to determine for your
+  system.)
 
-      2. Set watch: exists( b + "/ready", true )
-  
-      3. Create child: create( n, EPHEMERAL )
+- Enter procedure:
 
-      4. L = getChildren( b, false )
+  ``` 
+  1. Create a name n = b + "/" + p
 
-      5. if fewer children in L than x, wait for watch event
+  2. Set watch: exists( b + "/ready", true )
 
-      6. else create ( b + "/ready", REGULAR )
-      ```
-    - On entering, all processes watch on a ready node and create an ephemeral node as a child of the
-      barrier node
+  3. Create child: create( n, EPHEMERAL )
 
-    - Each process but the last enters the barrier and waits for the ready node to appear at line 5.
+  4. L = getChildren( b, false )
 
-    - The process that creates the xth node, the last process, will see x nodes in the list of children
-      and create the ready node, waking up the other processes.
+  5. if fewer children in L than x, wait for watch event
 
-      Note that waiting processes wake up only when it is time to exit, so waiting is efficient.
+  6. else create ( b + "/ready", REGULAR )
 
-    - Leave procedure:
-      ``` 
-      1. L = getChildren( b, false )
+  ```
 
-      2. if no children, exit
-  
-      3. if p is only process node on L, delete( n ) and exit
+- On entering, all processes watch on a ready node and create an ephemeral node as a child of the
+  barrier node
 
-      4. if p is the lowest process node in L, wait on highest process node in L
+- Each process but the last enters the barrier and waits for the ready node to appear at line 5.
 
-      5. else delete( n ) if  still existsand wait on lowest process node in L
+- The process that creates the xth node, the last process, will see x nodes in the list of children
+  and create the ready node, waking up the other processes.
 
-      6. goto 1
-      ```
-    - On exit, you can't use a flag such as ready because you are watching for process nodes to go
-      away.
+  Note that waiting processes wake up only when it is time to exit, so waiting is efficient.
 
-    - By using ephemeral nodes, processes that fail after the barrier has been entered do not
-      prevent correct processes from finishing.
+- Leave procedure:
 
-    - When processes are ready to leave, they need to delete their process nodes and wait for all
-      other processes to do the same.
+  ``` 
+  1. L = getChildren( b, false )
 
-    - Processes exit when there are no process nodes left as children of b. However, as an efficiency,
-      you can use the lowest process node as the ready flag.
+  2. if no children, exit
 
-    - All other processes that are ready to exit watch for the lowest existing process node to go away,
-      and the owner of the lowest process watches for any other process node (picking the highest for
-      simplicity) to go away.
+  3. if p is only process node on L, delete( n ) and exit
 
-    - This means that only a single process wakes up on each node deletion except for the last node,
-      which wakes up everyone when it is removed.
+  4. if p is the lowest process node in L, wait on highest process node in L
+
+  5. else delete( n ) if  still existsand wait on lowest process node in L
+
+  6. goto 1
+
+  ```
+- On exit, you can't use a flag such as ready because you are watching for process nodes to go
+  away.
+
+- By using ephemeral nodes, processes that fail after the barrier has been entered do not
+  prevent correct processes from finishing.
+
+- When processes are ready to leave, they need to delete their process nodes and wait for all
+  other processes to do the same.
+
+- Processes exit when there are no process nodes left as children of b. However, as an efficiency,
+  you can use the lowest process node as the ready flag.
+
+- All other processes that are ready to exit watch for the lowest existing process node to go away,
+  and the owner of the lowest process watches for any other process node (picking the highest for
+  simplicity) to go away.
+
+- This means that only a single process wakes up on each node deletion except for the last node,
+  which wakes up everyone when it is removed.
