@@ -2,36 +2,36 @@
  ```
  docker exec -it zoo1 bash
  ```
-type  zkCli.sh  to go to intractive mode
+Type  zkCli.sh  to go to intractive mode
 
-list root childeren
+List root childeren
  ```
  ls /
  ```
-see help
+See help
  ```
  help
  ```
-#### read and write dataa
+#### Read and Write data
  
-create znode	
+Create znode	
  ```
  create /zk-demo ''
  create /zk-demo/my-node 'Hello'
  ```
-get data
+Get data
  ```
  get /zk-demo/my-node
  ```
-change znode data
+Change znode data
  ```
  set /zk-demo/my-node 'Goodby'
  ```
-check data
+Check data
  ```
  get /zk-demo/my-node 
  ```
-deleye znode
+Deleye znode
  ```
  ls /zk-demo
  delete /zk-demo/my-node
@@ -40,54 +40,54 @@ deleye znode
  ```
 #### sequential and ephemeral znodes
 
-create sequential znode
+Create sequential znode
  ```
  create -s /zk-demo/sequential one
  create -s /zk-demo/sequential two
  ls /zk-demo
  get /zk-demo/sequential0000000001
  ```
-create ephemeral znode
+Create ephemeral znode
  ```
  create -e -s /zk-demo/ephemeral data
  ls /zk-demo
  ```
-type quit the login the ephemeral znode must be deleted
+Type quit the login the ephemeral znode must be deleted
  ```
  quit
  ```
 #### Watches
 
-create znode for watch
+Create znode for watch
  ```
  create /zk-demo/watch-this data
  ```
-set watch
+Set watch
  ```
  get -w /zk-demo/watch-this
  ```
-chande zknode data
+Change zknode data
  ```
  set /zk-demo/watch-this data2
  ```
-you must see this 
+You must see this:
  ```
  WATCHER::
  WatchedEvent state:SyncConnected type:NodeDataChanged path:/zk-demo/watch-this
  ```
-again change data
+Again change data
  ```
  set /zk-demo/watch-this data3
  ```
-you not see notification
+You not see notification
 
 #### Versioning and ACLs
 
-see metadata of znode
+See metadata of znode
  ```
  get -s /zk-demo/watch-this
  ```
-you see :
+You see :
  ```
  data2
  cZxid = 0x17a
