@@ -8,60 +8,61 @@
    processes at some point between the start and the end of the operation.  
 
    This is also known as the "linearization point".
+   ```
+      ,-.  
+      `-'  
+      /|\                                       ┌──────────────────────────────────┐ 
+       |      ──────────────────────────────────┤           write(x,v1)            ├──────────────────────────────────
+      / \                                       └──────────────────────────────────┘
+    Process 1 
+    
+      ,-.  
+      `-'                                                                                  
+      /|\              ┌──────────────────┐                                              ┌──────────────────┐ 
+       |      ─────────┤  read(x)=> null  ├──────────────────────────────────────────────┤  read(x)=> v1    ├─────────
+      / \              └──────────────────┘                                              └──────────────────┘
+    Process 2 
+    
+      ,-.  
+      `-'  
+      /|\                                          ┌───────────────────────┐ 
+       |      ─────────────────────────────────────┤ read(x)=> null or v1  ├───────────────────────────────────────────
+      / \                                          └───────────────────────┘
+    Process 3  
+   ``` 
+   As shown in the above diagram, before the write, all processes must read the old value. After the write, all processes 
+   must read the new value. When the operation is in-flight, it is unclear whether a process should see the old value or 
+   the new value.
+   ```
+      ,-.                                                                 linearizable point
+      `-'                                                               ║  
+      /|\                           ┌───────────────────────────────────╫─────────────────────────────┐ 
+       |      ──────────────────────┤           write(x,v1)             ║                             ├───────────
+      / \                           └───────────────────────────────────╫─────────────────────────────┘
+    Process 1  
+    
+      ,-.  
+      `-'                                                                                  
+      /|\              ┌────────────────╫─┐                                              ┌───────────────╫──┐ 
+       |      ─────────┤  read(x)=> null║ ├──────────────────────────────────────────────┤  read(x)=> v1 ║  ├─────────
+      / \              └────────────────╫─┘                                              └───────────────╫──┘
+    Process 2  
+    
+      ,-.  
+      `-'  
+      /|\                                   ┌────────────────╫──┐   ┌──────────────╫──┐ 
+       |      ──────────────────────────────┤ read(x)=> null ║  ├───┤read(x)=> v1  ║  ├───────────────────────────────
+      / \                                   └────────────────╫──┘   └──────────────╫──┘
+    Process 3  
+      
+   ```
+   when we put in the read line as the "linearizable point", all the read before the line should read null 
+   while all the points after the line should read v1.
 
+   In other words, all the read lines should only move forward in time. Once one of the processes has read 
+   the new value, all other processes should also read the new value.
 
-        ,-.  
-        `-'  
-        /|\                                       ┌──────────────────────────────────┐ 
-         |      ──────────────────────────────────┤           write(x,v1)            ├──────────────────────────────────
-        / \                                       └──────────────────────────────────┘
-      Process 1 
-        ,-.  
-        `-'                                                                                  
-        /|\              ┌──────────────────┐                                              ┌──────────────────┐ 
-         |      ─────────┤  read(x)=> null  ├──────────────────────────────────────────────┤  read(x)=> v1    ├─────────
-        / \              └──────────────────┘                                              └──────────────────┘
-      Process 2  
-        ,-.  
-        `-'  
-        /|\                                          ┌───────────────────────┐ 
-         |      ─────────────────────────────────────┤ read(x)=> null or v1  ├───────────────────────────────────────────
-        / \                                          └───────────────────────┘
-      Process 3  
-
-As shown in the above diagram, before the write, all processes must read the old value. After the write, all processes 
-must read the new value. When the operation is in-flight, it is unclear whether a process should see the old value or 
-the new value.
-
-
-
-
-        ,-.                                                                 linearizable point
-        `-'                                                               ║  
-        /|\                           ┌───────────────────────────────────╫─────────────────────────────┐ 
-         |      ──────────────────────┤           write(x,v1)             ║                             ├───────────
-        / \                           └───────────────────────────────────╫─────────────────────────────┘
-      Process 1  
-        ,-.  
-        `-'                                                                                  
-        /|\              ┌────────────────╫─┐                                              ┌───────────────╫──┐ 
-         |      ─────────┤  read(x)=> null║ ├──────────────────────────────────────────────┤  read(x)=> v1 ║  ├─────────
-        / \              └────────────────╫─┘                                              └───────────────╫──┘
-      Process 2  
-        ,-.  
-        `-'  
-        /|\                                   ┌────────────────╫──┐   ┌──────────────╫──┐ 
-         |      ──────────────────────────────┤ read(x)=> null ║  ├───┤read(x)=> v1  ║  ├───────────────────────────────
-        / \                                   └────────────────╫──┘   └──────────────╫──┘
-      Process 3  
-
-when we put in the read line as the "linearizable point", all the read before the line should read null 
-while all the points after the line should read v1.
-
-In other words, all the read lines should only move forward in time. Once one of the processes has read 
-the new value, all other processes should also read the new value.
-
-   Why is it useful?
+   **Why is it useful?**
 
    Sometimes we require uniqueness constraints across certain fields. 
 
@@ -69,7 +70,7 @@ the new value, all other processes should also read the new value.
    has accepted the request this user_id 123 has been taken, this information should be immediately visible to all 
    other processes that user_id 123 is already taken. And none shall use this id again.
 
-   How to implement it?
+   **How to implement it?**
 
    1. Single write master node with both read and write 
 
@@ -107,7 +108,7 @@ the new value, all other processes should also read the new value.
 
    This consistency model establishes a total global order of all the write operations.
 
-   Why is it useful?
+   **Why is it useful?**
 
    Sometimes we just want to know which operation happens after which operation in order to decide the latest 
    states of the data. 
@@ -119,18 +120,18 @@ the new value, all other processes should also read the new value.
    This consistency model cannot solve our unique user_id problem because we will only come to know the order 
    later. 
 
-   How to implement it?
+   **How to implement it?**
 
    1. Lamport Timestamp
 
       The algorithm follows some simple rules:
 
-      Step1. A process increments its counter before each local event (e.g., message sending event);
+      **Step1.** A process increments its counter before each local event (e.g., message sending event);
 
-      Step2. When a process sends a message, it includes its counter value with the message after executing 
+      **Step2.** When a process sends a message, it includes its counter value with the message after executing 
              step 1;
 
-      Step3. On receiving a message, the counter of the recipient is updated, if necessary, to the greater of 
+      **Step3.** On receiving a message, the counter of the recipient is updated, if necessary, to the greater of 
              its current counter and the timestamp in the received message. The counter is then incremented by 
              1 before the message is considered received.[2]
 
@@ -171,14 +172,14 @@ the new value, all other processes should also read the new value.
     the values. Resolution of the branches should only be resolved by the user. Or better yet if you can come out with a 
     conflict-free replicated data type (CRDT), then auto-merging is possible.
 
-    Why is it useful?
+    **Why is it useful?**
 
     This relaxation improves the speed of operations and reduces the cost of synchronization. And most of the time, that's 
     actually enough to serve our purpose. For example, if you are enrolling your credit card for transaction notification. 
     It does not matter at all if your friends enroll their cards first then you enroll yours or vice versa. But what does 
     matter is that if you enroll your card and unenroll it, this order has to be tracked.
 
-    How to implement it?
+    **How to implement it?**
 
     1. Version Vector
 
@@ -186,12 +187,12 @@ the new value, all other processes should also read the new value.
 
    Eventually, everything will be consistent. yes, eventually. That's the only promise.
 
-   Why is it useful?
+   **Why is it useful?**
 
    It is the default setting of many asynchronously replicated systems. It's fast and simple and available, at the 
    expense of consistency and potential data loss due to the last-write-win(LWW) conflict resolution strategy.
 
-   How to implement it?
+   **How to implement it?**
 
    1. Multi-leader replication
 
