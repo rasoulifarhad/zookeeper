@@ -12,8 +12,7 @@ see help
  ```
  help
  ```
- 
-## read and write dataa
+#### read and write dataa
  
 create znode	
  ```
@@ -39,9 +38,9 @@ deleye znode
  ls /zk-demo
  delete /zk-demo
  ```
-## sequential and ephemeral znodes
+#### sequential and ephemeral znodes
 
-crete sequential znode
+create sequential znode
  ```
  create -s /zk-demo/sequential one
  create -s /zk-demo/sequential two
@@ -57,7 +56,7 @@ type quit the login the ephemeral znode must be deleted
  ```
  quit
  ```
-## Watches
+#### Watches
 
 create znode for watch
  ```
@@ -82,13 +81,13 @@ again change data
  ```
 you not see notification
 
-## Versioning and ACLs
+#### Versioning and ACLs
 
 see metadata of znode
  ```
  get -s /zk-demo/watch-this
  ```
-# you see :
+you see :
  ```
  data2
  cZxid = 0x17a
