@@ -107,24 +107,24 @@ Partition replication and ZooKeeper
 **Configuration Management**
 	
 ```
-                                                                       /config
+                                                               /config
 Administrator
-                                                                               param1
+                                                                       param1
 1. setData(“/config/param1”, "value", -1)
-                                                                               param2
+                                                                       param2
 Consumer
-                                                                               param3
+                                                                       param3
 1. getData("/config/param1", true)
 
 Leader Election
 
-1. getdata(“/servers/leader”, true)                                     /servers
+1. getdata(“/servers/leader”, true)                            /servers
 
-2. if successful follow the leader                                             s1  
+2. if successful follow the leader                                       s1  
    described in the data and exit
-                                                                               s2
+                                                                         s2
 3. create(“/servers/leader”,hostname, EPHEMERAL) 
-                                                                               leader--> contains: "s1"                                
+                                                                        leader--> contains: "s1"                                
 4. f successful lead and exit
 
 5. goto step 1
@@ -140,9 +140,9 @@ Monitoring process:
 
  1. On watch trigger do getChildren(/nodes, true)
 
- 1. Track which nodes have gone away                                            /nodes -------------------------------------
-                                                                                             |             |         |  
-Each Node:                                                                                 node-1       node-2     node-3
+ 1. Track which nodes have gone away                                       /nodes -----------------------------
+                                                                                      |         |       |  
+Each Node:                                                                          node-1   node-2   node-3
 
  1. Create /nodes/node-${i} as ephemeral nodes
 
@@ -153,23 +153,23 @@ Each Node:                                                                      
 **Work Queues**
 
 ```
-Assigner process:                                                             |
-                                                                              | 
-1. Watch /tasks for published tasks                                           |--- /tasks --------------------------------------
-                                                                              |               |           |          | 
-2. Pick tasks on watch trigger from /tasks                                    |               |           |          |
-                                                                              |               |           |          | 
-3. assign it to a machine specific queue by creating                          |             task-1      task-2     task-3
-   create(/machines/m-${i}/task-${j})                                         |
-                                                                              |
-4. Watch for deletion of tasks from /tasks and /m-${i}                        |
-                                                                              \--- /machines --------------------------------------
-Machine process:                                                                      |
-                                                                                      |   
-1. Machines watch for /(/machines/m-${i}) for any creation of tasks                   |
-                                                                                      |------ m-1  
-2. After executing task-${i} delete task-${i} from /tasks and /m-${i}                          |
-                                                                                               \--- task-1
+Assigner process:                                                           |
+                                                                            | 
+1. Watch /tasks for published tasks                                         |--- /tasks ------------------------------
+                                                                            |               |         |        | 
+2. Pick tasks on watch trigger from /tasks                                  |               |         |        |
+                                                                            |               |         |        | 
+3. assign it to a machine specific queue by creating                        |             task-1    task-2   task-3
+   create(/machines/m-${i}/task-${j})                                       |
+                                                                            |
+4. Watch for deletion of tasks from /tasks and /m-${i}                      |
+                                                                            \--- /machines ----------------------------
+Machine process:                                                                    |
+                                                                                    |   
+1. Machines watch for /(/machines/m-${i}) for any creation of tasks                 |
+                                                                                    |------ m-1  
+2. After executing task-${i} delete task-${i} from /tasks and /m-${i}                        |
+                                                                                             \--- task-1
 
 ```
 
@@ -225,6 +225,7 @@ Fallacies of distributed computing
 - Can’t obtain availability, consistency, and partition tolerance simultaneously
 
 ZooKeeper Overview
+
 ```
                                                                          Ensemble 
         ┌────────────┐ ┌────────────┐                              ┌────────────────┐   
@@ -273,7 +274,7 @@ Read Operation
                                                                    │  └──────────┘  │ 
                                                                    └────────────────┘ 
 ```
-	
+
 Write Operation
 ```
                                                                          Ensemble 
@@ -360,7 +361,7 @@ ZooKeeper: Znode changes
 
   - Set a watch
   - Upon change, client receives a notification
-  - Notification ordered before new updates    
+  - Notification ordered before new updates
 
 Watches, Locks, and the herd eﬀect
 
@@ -370,7 +371,7 @@ Herd eﬀect
 
 Load spikes
 
-- Undesirable 
+- Undesirable
 
 A solution
 
@@ -435,22 +436,21 @@ Linearizability
 Implementing consensus
 
   - Each process p proposes then decides
-  
+
   - Propose(v)
-  
+
       -  setData “/c/proposal-”, “v”, sequential
-  
+
   - Decide()
-  
+
     -  getChildren “/c”
-    
+
     -  Select znode z with smallest sequence number
-    
+
     - v’ = getData “/c/z”
-    
+
     - Decide upon v’
-    
-    
+
 sync
 
   - Asynchronous operation    
@@ -460,8 +460,7 @@ sync
   - Flushes the channel between follower and leader
   
   - Makes operations linearizable
-  
-  
+    
 Master/Worker System
 
 - Clients
@@ -476,12 +475,14 @@ Master/Worker System
 - Workers
 
  > Get tasks from the master
- > Execute tasks                                                                             tasks
+ > Execute tasks   tasks
 
 Task Queue
+
 ``
 client1    create("/tasks/client1-", cmds, SEQUENTIAL)   // cmds is an array of string       
 ```
+
 ```
 tasks
   │
@@ -491,7 +492,7 @@ tasks
   │
   └──client1-6
 ```
-	
+
 Group Membership
 
 ```
@@ -511,7 +512,7 @@ Leader Election
            
                                        Backup: getData("/master", true)                            
 ```
-	
+
 Conﬁguration
 
 ```
