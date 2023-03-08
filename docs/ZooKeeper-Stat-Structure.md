@@ -2,7 +2,7 @@
    
    The Stat structure for each znode in ZooKeeper is made up of the following fields:
    
-      - **czxid**
+      -  **czxid**
         The zxid of the change that caused this znode to be created.
 
       - **mzxid**
