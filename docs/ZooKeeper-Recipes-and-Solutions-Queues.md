@@ -5,7 +5,7 @@ notifications, you can use it to build synchronous consistency primitives, such 
 As you will see, this is possible because ZooKeeper imposes an overall order on updates, and has
 mechanisms to expose this ordering.
 
-**Out of the Box Applications: Name Service, Configuration, Group Membership**
+**Out of the Box Applications**: Name Service, Configuration, Group Membership
 
 Name service and configuration are two of the primary applications of ZooKeeper. These two functions
 are provided directly by the ZooKeeper API.
@@ -37,11 +37,12 @@ To implement a distributed queue in ZooKeeper,
 - If there are are no children in the queue node, the reader waits for a watch notification to check the
   queue again.
 
-**Note**
+**Note**:
     There now exists a Queue implementation in ZooKeeper recipes directory. This is distributed with the
     release -- src/recipes/queue directory of the release artifact.
 
 **Priority Queues**
+
 To implement a priority queue, you need only make two simple changes to the generic queue recipe .
 
 - First, to add to a queue, the pathname ends with "queue-YY" where YY is the priority of the element
