@@ -418,15 +418,15 @@ Linearizability
 ```
 
 ```
-  	          │ write(x,10) │     │   read(x)   │      
+  	       │ write(x,10) │     │   read(x)   │      
  Client 1(c1): ├─────────────┤     ├─────────────┤   
                │             │     │             │  
                                  
-  	                         │   read(x)   │
+  	                      │   read(x)   │
  Client 2(c2):                ├─────────────┤  
                               │             │
 
-  	          │ write(x,11) ││ (c2)read(x) ││ (c1)read(x) │
+  	       │ write(x,11) ││ (c2)read(x) ││ (c1)read(x) │
  Sequential:   ├─────────────┤├─────────────┤├─────────────┤  
                │             ││             ││             │
 
@@ -435,6 +435,7 @@ Linearizability
 
 Implementing consensus
 
+```
   - Each process p proposes then decides
 
   - Propose(v)
@@ -450,6 +451,7 @@ Implementing consensus
     - v’ = getData “/c/z”
 
     - Decide upon v’
+```
 
 sync
 
@@ -479,7 +481,7 @@ Master/Worker System
 
 Task Queue
 
-``
+```
 client1    create("/tasks/client1-", cmds, SEQUENTIAL)   // cmds is an array of string       
 ```
 
