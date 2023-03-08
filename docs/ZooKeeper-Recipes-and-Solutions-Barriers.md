@@ -34,7 +34,7 @@ Here's the pseudo code:
 
   4. When the watch event is triggered, the client reissues the exists( ) call, again waiting until the
      barrier node is removed.
-
+  ```
 **Double Barriers**
 
 Double barriers enable clients to synchronize the beginning and the end of a computation. When enough
@@ -51,7 +51,7 @@ have finished. This recipe shows how to use a ZooKeeper node as a barrier.
       system.)
 
     - Enter procedure:
-
+      ``` 
       1. Create a name n = b + "/" + p
 
       2. Set watch: exists( b + "/ready", true )
@@ -63,7 +63,7 @@ have finished. This recipe shows how to use a ZooKeeper node as a barrier.
       5. if fewer children in L than x, wait for watch event
 
       6. else create ( b + "/ready", REGULAR )
-
+      ```
     - On entering, all processes watch on a ready node and create an ephemeral node as a child of the
       barrier node
 
@@ -75,7 +75,7 @@ have finished. This recipe shows how to use a ZooKeeper node as a barrier.
       Note that waiting processes wake up only when it is time to exit, so waiting is efficient.
 
     - Leave procedure:
-  
+      ``` 
       1. L = getChildren( b, false )
 
       2. if no children, exit
@@ -87,7 +87,7 @@ have finished. This recipe shows how to use a ZooKeeper node as a barrier.
       5. else delete( n ) if  still existsand wait on lowest process node in L
 
       6. goto 1
-
+      ```
     - On exit, you can't use a flag such as ready because you are watching for process nodes to go
       away.
 
