@@ -166,15 +166,15 @@ Machine process:                                                                
                                                                                                \--- task-1
 
 
-CoordinaOon is important� 
+CoordinaOon is important 
 
-  CoordinaOon primiOves
+  CoordinaOon primitives
 
-  - Semaphores�r
-  - Queues��
-  - Leader election�v
-  - Group membership�e
-  - Barriers�b
+  - Semaphores
+  - Queues
+  - Leader election
+  - Group membership
+  - Barriers
   - Configuration
 
 Work assignment
@@ -182,18 +182,18 @@ Work assignment
 - Master assigns works 
 - Workers execute tasks assigned by master
 
-Master crashes�t
+Master crashes
 
 - Single point of  failure
 
-- No work is assigned�l
+- No work is assigned
 
 - Need to select a new master
 
 Worker crashes
 
 - Not as bad… Overall system still works
-- Some tasks will never be executed� 
+- Some tasks will never be executed
 - Need to detect crashed workers
 
 Worker does not receive assignment
@@ -215,13 +215,9 @@ Fallacies of distributed computing
 
 CAP principle
 
-- Can’t obtain availability, consistency, and partition tolerance simultaneously� 
+- Can’t obtain availability, consistency, and partition tolerance simultaneously
 
-
-┌ ┐ ─ | └ ┘  ─ ┬ ┴ ├ ┤  │
 ZooKeeper Overview
-
-
                                                                          Ensemble 
         ┌────────────┐ ┌────────────┐                              ┌────────────────┐   
         │            │ │ ZooKeeper  │                              │  ┌──────────┐  │
@@ -244,9 +240,7 @@ ZooKeeper Overview
                                                                    │  └──────────┘  │ 
                                                                    └────────────────┘ 
 
-
 Read Operation
-
                                                                          Ensemble 
         ┌────────────┐ ┌────────────┐                              ┌────────────────┐   
         │            │ │ ZooKeeper  │            Read "x"          │  ┌─x=10─────┐  │ Read  
@@ -270,7 +264,6 @@ Read Operation
                                                                    └────────────────┘ 
 
 Write Operation
-
                                                                          Ensemble 
         ┌────────────┐ ┌────────────┐                              ┌────────────────┐   
         │            │ │ ZooKeeper  │         write "x",11         │  ┌─x=11─────┐  │ 
@@ -295,23 +288,23 @@ Write Operation
                                                                       Replicates across a quorum
 
 
-ZooKeeper: Seman7cs of Sessions
+ZooKeeper: Semantics of Sessions
 
-- A preﬁx of opera7ons submiUed through a
+- A preﬁx of operations submiUed through a
  session are executed
 
-- Upon disconnec7on
+- Upon disconnection
 
  - Client lib tries to contact another server
  - Before session expires: connect to new server
- - Server must have seen a transac7on id at least as
+ - Server must have seen a transaction id at least as
    large as the session
 
 ZooKeeper: API
 
 - Create znodes: create
 
-  - Persistent, sequen7al, ephemeral 
+  - Persistent, sequential, ephemeral 
 
 - Read and modify data: setData, getData
 
@@ -325,9 +318,9 @@ Order
 
 - Updates: Totally ordered, linearizable
 
-- FIFO order for client opera7ons
+- FIFO order for client operations
 
-- Read: sequen7ally ordered
+- Read: sequentially ordered
 
   	          │ write(x,10) │
  Client 1:     ├─────────────┤  
@@ -428,7 +421,7 @@ Linearizability
                        Linearizableeeeee
 
 
-Implemen7ng consensus
+Implementing consensus
 
   - Each process p proposes then decides
   
