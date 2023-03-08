@@ -26,7 +26,7 @@ The Stat structure for each znode in ZooKeeper is made up of the following field
   The number of changes to the ACL of this znode.
 
 * **ephemeralOwner**:
-  The session id of the owner of this znode if the znode is an ephemeral <br/>node. If it is not an ephemeral node, it will be zero.
+  The session id of the owner of this znode if the znode is an <br/>ephemeral node. If it is not an ephemeral node, it will be zero.
 
 * **dataLength**:
   The length of the data field of this znode.
