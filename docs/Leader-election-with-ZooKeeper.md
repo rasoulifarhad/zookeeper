@@ -455,19 +455,19 @@ Implementing consensus
 
 sync
 
-  - Asynchronous operation    
-  
+  - Asynchronous operation
+
   - Before read operations
-  
+
   - Flushes the channel between follower and leader
-  
+
   - Makes operations linearizable
-    
+
 Master/Worker System
 
 - Clients
 
- > Queue tasks to be executed 
+ > Queue tasks to be executed
  > Monitor the tasks
 
 - Masters
@@ -529,18 +529,18 @@ assign                                Master : setdata(“/assign/worker2”, zn
 
 Worker Processing
 
-- Create a session 
-- Create the “worker” ephemeral znode 
-- Watch for the assign znode 
+- Create a session
+- Create the “worker” ephemeral znode
+- Watch for the assign znode
 - Deal with the watches
 
-  > Processing the assignment 
+  > Processing the assignment
 
     - Update status in the task
 
-    - Delete assignment znode when ﬁnished 
+    - Delete assignment znode when ﬁnished
 
-  > What do to with SessionExpired 
+  > What do to with SessionExpired
 
 Client Processing
 
@@ -570,11 +570,11 @@ Master Processing
 
 Guidelines to ConnectionLoss
 
-- A process will not see state changes while 
+- A process will not see state changes while
   disconnected
 
 - Masters should act very conservatively, they
-  should not assume that they still have 
+  should not assume that they still have
   mastership
 
 - Don't treat as if it's the end of the world. The
