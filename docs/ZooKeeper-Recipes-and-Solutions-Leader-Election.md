@@ -15,6 +15,7 @@ node. Members of the group create ephemeral nodes under the group node. Nodes of
 fail abnormally will be removed automatically when ZooKeeper detects the failure.
 
 **Leader Election**
+
 A simple way of doing leader election with ZooKeeper is to use the SEQUENCE|EPHEMERAL flags when 
 creating znodes that represent "proposals" of clients. The idea is to have a znode, say "/election",
 such that each znode creates a child znode "/election/guid-n_" with both flags SEQUENCE|EPHEMERAL.
