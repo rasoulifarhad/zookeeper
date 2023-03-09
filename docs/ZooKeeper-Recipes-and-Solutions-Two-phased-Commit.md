@@ -20,20 +20,20 @@ A two-phase commit protocol is an algorithm that lets all clients in a distribut
 to commit a transaction or abort.
 
 In ZooKeeper, you can implement a two-phased commit by:
-  ```
-  * bhaving a coordinator create a transaction node,  say "/app/Tx", and one child node per participating 
-    site, say "/app/Tx/s_i".
+```
+* bhaving a coordinator create a transaction node,  say "/app/Tx", and one child node per participating 
+  site, say "/app/Tx/s_i".
 
-  * When coordinator creates the child node, it leaves the content undefined.
+* When coordinator creates the child node, it leaves the content undefined.
 
-  * Once each site involved in the transaction receives the transaction from the coordinator, the site reads
-    each child node and sets a watch. 
+* Once each site involved in the transaction receives the transaction from the coordinator, the site reads
+  each child node and sets a watch. 
 
-  * Each site then processes the query and votes "commit" or "abort" by writing to its respective node.
+* Each site then processes the query and votes "commit" or "abort" by writing to its respective node.
 
-  * Once the write completes, the other sites are notified, and as soon as all sites have all votes, they can
-    decide either "abort" or "commit".
-  ```
+* Once the write completes, the other sites are notified, and as soon as all sites have all votes, they can
+  decide either "abort" or "commit".
+```
 **Note** that a node can decide "abort" earlier if some site votes for "abort".
 
 An interesting aspect of this implementation is that the only role of the coordinator is to decide upon 
