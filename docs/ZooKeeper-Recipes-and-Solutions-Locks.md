@@ -65,12 +65,12 @@ You can implement shared locks by with a few changes to the lock protocol:
 
 Obtaining a read lock:
   ```
-  1. Call create( ) to create a node with pathname "guid-/read-". This is the lock node use 
-     later in the protocol. Make sure to set both the sequence and ephemeral flags.	
-  2. Call getChildren( ) on the lock node without setting the watch flag - this is important,
-     as it avoids the herd effect.	
-  3. If there are no children with a pathname starting with "write-" and having a lower 
-     sequence number than the node created in step 1, the client has the lock and can 
+  1. Call create( ) to create a node with pathname "guid-/read-". This is the lock node use later
+     in the protocol. Make sure to set both the sequence and ephemeral flags.	
+  2. Call getChildren( ) on the lock node without setting the watch flag - this is important, as
+     it avoids the herd effect.	
+  3. If there are no children with a pathname starting with "write-" and having a lower sequence
+     number than the node created in step 1, the client has the lock and can 
      exit the protocol.	
   4. Otherwise, call exists( ), with watch flag, set on the node in lock directory with pathname 
      starting with "write-" having the next lowest sequence number.	
@@ -80,8 +80,8 @@ Obtaining a read lock:
   ```
 Obtaining a write lock:
   ```
-  1. Call create( ) to create a node with pathname "guid-/write-". This is the lock node spoken of
-     later in the protocol. Make sure to set both sequence and ephemeral flags.
+  1. Call create( ) to create a node with pathname "guid-/write-". This is the lock node spoken
+     of later in the protocol. Make sure to set both sequence and ephemeral flags.
   2. Call getChildren( ) on the lock node without setting the watch flag - this is important, as 
      it avoids the herd effect.
   3. If there are no children with a lower sequence number than the node created in step 1, the 
