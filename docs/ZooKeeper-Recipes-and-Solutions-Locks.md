@@ -15,3 +15,32 @@ node. Members of the group create ephemeral nodes under the group node. Nodes of
 fail abnormally will be removed automatically when ZooKeeper detects the failure.
 
 **Locks**
+
+Fully distributed locks that are globally synchronous, meaning at any snapshot in time no two clients 
+think they hold the same lock.
+
+First define a lock node.
+
+Note 
+  There now exists a Lock implementation in ZooKeeper recipes directory.
+
+Clients wishing to obtain a lock do the following:
+
+  ```
+  1. Call create( ) with a pathname of "locknode/guid-lock-" and the sequence and ephemeral flags 
+     set. The guid is needed in case the create() result is missed. See the note below.
+
+  2. Call getChildren( ) on the lock node without setting the watch flag (this is important to 
+     avoid the herd effect).
+
+  3. If the pathname created in step 1 has the lowest sequence number suffix, the client has the 
+     lock and the client exits the protocol.
+
+  4. The client calls exists( ) with the watch flag set on the path in the lock directory with 
+     the next lowest sequence number.
+
+  5. if exists( ) returns null, go to step 2. Otherwise, wait for a notification for the pathname 
+     from the previous step before going to step 2.
+  ```
+
+
